@@ -156,7 +156,6 @@
             }
         }
 
-        /* Estilo para o botão de logout */
         .logout-btn {
             padding: 10px 20px;
             background-color: #ffffff;
@@ -213,7 +212,6 @@
                 <span>{{ book.title }}</span>
                 <div>
                     <a href="{{ url_for('jogo', title=book.title) }}" class="btn btn-info btn-sm">Ver Detalhes</a>
-                    <!-- Formulário para atualizar título, descrição e nota -->
                     <form method="POST" action="./update" style="display: inline;">
                         <input type="hidden" name="oldtitle" value="{{ book.title }}">
                         <input type="text" name="newtitle" placeholder="Novo título" class="form-control-sm" required style="width: 150px; display: inline;">
@@ -221,7 +219,6 @@
                         <input type="number" name="newrating" placeholder="Nova nota (0 a 10)" class="form-control-sm" required style="width: 100px; display: inline;" step="0.1" min="0" max="10">
                         <input type="submit" value="Atualizar" class="btn btn-warning btn-sm">
                     </form>
-                    <!-- Formulário para deletar o jogo -->
                     <form method="POST" action="./delete" style="display: inline;">
                         <input type="hidden" name="title" value="{{ book.title }}">
                         <input type="submit" value="Deletar" class="btn btn-danger btn-sm">
@@ -234,7 +231,6 @@
         {% endif %}
     </div>
 
-    <!-- Botão de logout no final da página -->
     {% if session.get('user_id') %}
         <div class="text-center">
             <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
