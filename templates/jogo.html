@@ -39,6 +39,25 @@
             font-size: 7vh;
             font-family: Poppins;
         }
+
+        .comment-box {
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .comment {
+            margin-bottom: 10px;
+        }
+
+        .comment-author {
+            font-weight: bold;
+        }
+
+        .comment-text {
+            color: #34495e;
+        }
     </style>
 </head>
 <body>
@@ -53,6 +72,28 @@
                 <p class="card-text">Nota: {{ book.rating }} ★</p>
                 <a href="/" class="btn btn-secondary back-button">Voltar</a>
             </div>
+        </div>
+
+        <!-- Se o usuário estiver logado, pode comentar -->
+        {% if session.get('user_id') %}
+            <div class="comment-box">
+                <form method="POST">
+                    <textarea name="content" class="form-control" rows="4" placeholder="Deixe seu comentário..."></textarea>
+                    <button type="submit" class="btn btn-primary mt-3">Comentar</button>
+                </form>
+            </div>
+        {% endif %}
+
+        <!-- Exibir os comentários -->
+        <div class="comments mt-4">
+            <h4>Comentários:</h4>
+            {% for comment in comments %}
+                <div class="comment">
+                    <p class="comment-author">{{ comment.user.username }}</p>
+                    <p class="comment-text">{{ comment.content }}</p>
+                    <small>{{ comment.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </body>
