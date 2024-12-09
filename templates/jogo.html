@@ -12,30 +12,33 @@
             background-color: #fcfcfc;
             font-family: Arial, sans-serif;
         }
+
         .header {
             text-align: center;
             margin-top: 20px;
         }
+
         .card {
             margin: 20px auto;
             font-family: Noto Sans Japanese;
             font-size: large;
             max-width: 600px;
-            -webkit-box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.81);
-            -moz-box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.81);
-            box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.81)
+            box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.81);
         }
+
         .back-button {
             margin-top: 20px;
         }
+
         .card-title {
             color: gray;
         }
+
         .card-text {
             color: #34495e;
         }
 
-        h1{
+        h1 {
             font-size: 7vh;
             font-family: Poppins;
         }
@@ -74,7 +77,6 @@
             </div>
         </div>
 
-        <!-- Se o usuário estiver logado, pode comentar -->
         {% if session.get('user_id') %}
             <div class="comment-box">
                 <form method="POST">
@@ -84,7 +86,6 @@
             </div>
         {% endif %}
 
-        <!-- Exibir os comentários -->
         <div class="comments mt-4">
             <h4>Comentários:</h4>
             {% for comment in comments %}
@@ -92,6 +93,11 @@
                     <p class="comment-author">{{ comment.user.username }}</p>
                     <p class="comment-text">{{ comment.content }}</p>
                     <small>{{ comment.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                    {% if session.get('user_id') == comment.user_id %}
+                        <form action="{{ url_for('delete_comment', comment_id=comment.id) }}" method="POST">
+                            <button type="submit" class="btn btn-danger mt-2">Excluir</button>
+                        </form>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
