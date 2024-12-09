@@ -29,6 +29,9 @@ class Book(db.Model):
     title = db.Column(db.String(80), unique=True, nullable=False, primary_key=True)
     description = db.Column(db.Text, nullable=True)
     rating = db.Column(db.Float, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Novo campo
+
+    user = db.relationship('User', backref='books')  # Relacionamento com User
 
     def __repr__(self):
         return f"<Book {self.title}>"
@@ -47,6 +50,7 @@ class Comment(db.Model):
     def __repr__(self):
         return f"<Comment {self.content[:20]}...>"
 
+
 with app.app_context():
     db.create_all()
 
@@ -56,7 +60,7 @@ with app.app_context():
 @app.route("/", methods=["GET", "POST"])
 def home():
     if "user_id" not in session:
-        return redirect("/register")
+        return redirect("/login")
 
     if request.method == "POST":
         title = request.form.get("title")
@@ -64,7 +68,8 @@ def home():
         rating = request.form.get("rating")
 
         try:
-            book = Book(title=title, description=description, rating=float(rating))
+            # Associa o livro ao usuário logado através de session["user_id"]
+            book = Book(title=title, description=description, rating=float(rating), user_id=session["user_id"])
             db.session.add(book)
             db.session.commit()
             flash("Livro adicionado com sucesso!", "success")
@@ -162,6 +167,18 @@ def delete():
     else:
         flash("Livro não encontrado.", "danger")
     return redirect("/")
+
+
+@app.route("/delete_comment/<int:comment_id>", methods=["POST"])
+def delete_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+    if comment:
+        db.session.delete(comment)
+        db.session.commit()
+        flash("Comentário excluído com sucesso!", "success")
+    else:
+        flash("Comentário não encontrado.", "danger")
+    return redirect(request.referrer)  # Retorna para a página de onde o usuário veio
 
 
 @app.route("/jogo/<title>", methods=["GET", "POST"])
