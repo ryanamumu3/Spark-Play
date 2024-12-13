@@ -12,7 +12,6 @@ app.config["SQLALCHEMY_DATABASE_URI"] = database_file
 app.secret_key = os.urandom(24)
 db = SQLAlchemy(app)
 
-
 # Modelos
 
 class User(db.Model):
@@ -24,18 +23,26 @@ class User(db.Model):
     def __repr__(self):
         return f"<User {self.username}>"
 
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    description = db.Column(db.String(200))
+
+    def __repr__(self):
+        return f"<Category {self.name}>"
 
 class Book(db.Model):
     title = db.Column(db.String(80), unique=True, nullable=False, primary_key=True)
     description = db.Column(db.Text, nullable=True)
     rating = db.Column(db.Float, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Novo campo
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)  # Nova chave estrangeira
 
     user = db.relationship('User', backref='books')  # Relacionamento com User
+    category = db.relationship('Category', backref='books')  # Relacionamento com Category
 
     def __repr__(self):
         return f"<Book {self.title}>"
-
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -50,10 +57,8 @@ class Comment(db.Model):
     def __repr__(self):
         return f"<Comment {self.content[:20]}...>"
 
-
 with app.app_context():
     db.create_all()
-
 
 # Rotas
 
@@ -66,10 +71,11 @@ def home():
         title = request.form.get("title")
         description = request.form.get("description")
         rating = request.form.get("rating")
+        category_id = request.form.get("category")  # Obter o ID da categoria selecionada
 
         try:
             # Associa o livro ao usuário logado através de session["user_id"]
-            book = Book(title=title, description=description, rating=float(rating), user_id=session["user_id"])
+            book = Book(title=title, description=description, rating=float(rating), user_id=session["user_id"], category_id=category_id)
             db.session.add(book)
             db.session.commit()
             flash("Livro adicionado com sucesso!", "success")
@@ -77,9 +83,9 @@ def home():
             flash("Falha ao adicionar livro", "danger")
             print("Falha ao adicionar livro:", e)
 
+    categories = Category.query.all()  # Obtém todas as categorias
     books = Book.query.all()
-    return render_template("index.html", books=books)
-
+    return render_template("index.html", books=books, categories=categories)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -108,7 +114,6 @@ def register():
 
     return render_template("register.html")
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -126,13 +131,11 @@ def login():
 
     return render_template("login.html")
 
-
 @app.route("/logout")
 def logout():
     session.clear()
     flash("Você saiu com sucesso!", "success")
     return redirect("/login")
-
 
 @app.route("/update", methods=["POST"])
 def update():
@@ -155,7 +158,6 @@ def update():
         print("Falha ao atualizar livro:", e)
     return redirect("/")
 
-
 @app.route("/delete", methods=["POST"])
 def delete():
     title = request.form.get("title")
@@ -168,7 +170,6 @@ def delete():
         flash("Livro não encontrado.", "danger")
     return redirect("/")
 
-
 @app.route("/delete_comment/<int:comment_id>", methods=["POST"])
 def delete_comment(comment_id):
     comment = Comment.query.get(comment_id)
@@ -179,7 +180,6 @@ def delete_comment(comment_id):
     else:
         flash("Comentário não encontrado.", "danger")
     return redirect(request.referrer)  # Retorna para a página de onde o usuário veio
-
 
 @app.route("/jogo/<title>", methods=["GET", "POST"])
 def jogo(title):
