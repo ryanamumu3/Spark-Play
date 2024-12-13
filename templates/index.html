@@ -6,7 +6,18 @@
     <title>Spark Play</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
+        input[type="text"], .form-container textarea, .form-container input[type="number"], .form-container select {
+            width: 50%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ecf0f1;
+            font-size: 16px;
+            margin-right: 10px;
+            outline: none;
+            -webkit-box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.60);
+            -moz-box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.60);
+            box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.60);
+        } body {
             background-image: url("{{ url_for('static', filename='brawl.png') }}");
             background-size: cover;
             color: #ecf0f1;
@@ -32,25 +43,7 @@
             margin-bottom: 50px;
         }
 
-        .form-container input[type="text"], .form-container textarea, .form-container input[type="number"] {
-            width: 50%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 2px solid #ecf0f1;
-            font-size: 16px;
-            margin-right: 10px;
-            outline: none;
-            -webkit-box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.60);
-            -moz-box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.60);
-            box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.60);
-        }
-
-        .form-container input[type="text"]:focus, .form-container textarea:focus, .form-container input[type="number"]:focus {
-            border-color: #e67e22;
-            -webkit-box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.81);
-            -moz-box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.81);
-            box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.81);
-        }
+        .form-container
 
         .form-container input[type="submit"] {
             padding: 10px 20px;
@@ -63,10 +56,6 @@
             -webkit-box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.81);
             -moz-box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.81);
             box-shadow: 17px 13px 12px -4px rgba(0,0,0,0.81);
-        }
-
-        .form-container input[type="submit"]:hover {
-            background-color: #04d300;
         }
 
         .game-item {
@@ -90,70 +79,6 @@
             padding: 5px 10px;
             margin-left: 5px;
             border-radius: 8px;
-        }
-
-        .game-item .btn-info {
-            background-color: #3498db;
-        }
-
-        .game-item .btn-info:hover {
-            background-color: #19df78;
-        }
-
-        .game-item .btn-warning {
-            background-color: #f39c12;
-        }
-
-        .game-item .btn-warning:hover {
-            background-color: #e67e22;
-        }
-
-        .game-item .btn-danger {
-            background-color: #e74c3c;
-        }
-
-        .game-item .btn-danger:hover {
-            background-color: #e21e09;
-        }
-
-        .game-item form {
-            display: inline-block;
-            margin: 0;
-        }
-
-        .game-item input[type="text"], .game-item input[type="number"] {
-            font-size: 1rem;
-            width: 160px;
-            margin-right: 10px;
-        }
-
-        .game-item input[type="submit"] {
-            background-color: #d3d3d3;
-            color: #fff;
-            border-radius: 8px;
-            padding: 5px 15px;
-            border: none;
-        }
-
-        .game-item input[type="submit"]:hover {
-            background-color: #e70d0d;
-        }
-
-        @media (max-width: 768px) {
-            .form-container input[type="text"] {
-                width: 80%;
-                margin-bottom: 10px;
-            }
-
-            .game-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .game-item .btn {
-                width: 100%;
-                margin-top: 5px;
-            }
         }
 
         .logout-btn {
@@ -200,6 +125,7 @@
             <input type="text" name="title" placeholder="Digite o nome do jogo" required class="form-control mx-auto">
             <textarea name="description" placeholder="Digite uma breve descrição" required class="form-control mx-auto" rows="4"></textarea>
             <input type="number" name="rating" placeholder="Nota (0 a 10)" required class="form-control mx-auto" step="0.1" min="0" max="10">
+
             <input type="submit" value="Adicionar" class="btn btn-primary mt-2">
         </form>
     </div>
@@ -217,6 +143,7 @@
                         <input type="text" name="newtitle" placeholder="Novo título" class="form-control-sm" required style="width: 150px; display: inline;">
                         <input type="text" name="newdescription" placeholder="Nova descrição" class="form-control-sm" required style="width: 150px; display: inline;">
                         <input type="number" name="newrating" placeholder="Nova nota (0 a 10)" class="form-control-sm" required style="width: 100px; display: inline;" step="0.1" min="0" max="10">
+                      
                         <input type="submit" value="Atualizar" class="btn btn-warning btn-sm">
                     </form>
                     <form method="POST" action="./delete" style="display: inline;">
